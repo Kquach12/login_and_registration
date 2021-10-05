@@ -39,6 +39,12 @@ class User:
         query = "SELECT * FROM users WHERE id = %(id)s;"
         results = connectToMySQL('login_schema').query_db(query, data)
         return cls(results[0])
+    
+    @classmethod
+    def get_by_email(cls, data):
+        query = "SELECT * FROM users WHERE email = %(email)s;"
+        results = connectToMySQL('login_schema').query_db(query, data)
+        return cls(results[0])
         
     # @classmethod
     # def update(cls, data):
@@ -61,5 +67,8 @@ class User:
             is_valid = False
         if not EMAIL_REGEX.match(email['email']): 
             flash("Invalid email address!")
+            is_valid = False
+        if email['password'] != email['confirm_password']:
+            flash("Passwords don't match!")
             is_valid = False
         return is_valid
