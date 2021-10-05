@@ -50,16 +50,16 @@ class User:
         query = "DELETE FROM userss WHERE id = %(id)s"
         return connectToMySQL('login_schema').query_db(query, data)
 
-    # @staticmethod
-    # def validate_email(email):
-    #     is_valid = True
-    #     # test whether a field matches the pattern
-    #     query = "SELECT * FROM emails WHERE email = %(email)s;"
-    #     results = connectToMySQL('login_schema').query_db(query,email)
-    #     if len(results) >= 1:
-    #         flash("Email is taken!")
-    #         is_valid = False
-    #     if not EMAIL_REGEX.match(email['email']): 
-    #         flash("Invalid email address!")
-    #         is_valid = False
-    #     return is_valid
+    @staticmethod
+    def validate_email(email):
+        is_valid = True
+        # test whether a field matches the pattern
+        query = "SELECT * FROM users WHERE email = %(email)s;"
+        results = connectToMySQL('login_schema').query_db(query,email)
+        if len(results) >= 1:
+            flash("Email is taken!")
+            is_valid = False
+        if not EMAIL_REGEX.match(email['email']): 
+            flash("Invalid email address!")
+            is_valid = False
+        return is_valid
