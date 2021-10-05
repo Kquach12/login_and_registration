@@ -57,18 +57,42 @@ class User:
         return connectToMySQL('login_schema').query_db(query, data)
 
     @staticmethod
-    def validate_email(email):
+    def validate_email(user):
         is_valid = True
         # test whether a field matches the pattern
         query = "SELECT * FROM users WHERE email = %(email)s;"
-        results = connectToMySQL('login_schema').query_db(query,email)
+        results = connectToMySQL('login_schema').query_db(query,user)
         if len(results) >= 1:
-            flash("Email is taken!")
+            flash("Email is taken!", "register")
             is_valid = False
-        if not EMAIL_REGEX.match(email['email']): 
-            flash("Invalid email address!")
+        if not EMAIL_REGEX.match(user['email']): 
+            flash("Invalid email address!", "register")
             is_valid = False
-        if email['password'] != email['confirm_password']:
-            flash("Passwords don't match!")
+        if user['password'] != user['confirm_password']:
+            flash("Passwords don't match! ", "register")
+            is_valid = False
+        if len(user['password']) < 5:
+            flash("Password must be at least 5 characters ", "register")
+            is_valid = False
+        if len(user['first_name']) < 1:
+            flash("Please enter your first name ", "register")
+            is_valid = False
+        if len(user['last_name']) < 1:
+            flash("Please enter your last name ", "register")
+            is_valid = False
+
+        return is_valid
+
+
+    @staticmethod
+    def validate_login(user):
+        is_valid = True
+        query = "SELECT * FROM users WHERE email = %(email)s;"
+        results = connectToMySQL('login_schema').query_db(query,user)
+        if len(results) == 0:
+            flash("Account does not exist", "login")
+            is_valid = False
+        if not EMAIL_REGEX.match(user['email']): 
+            flash("Please enter an email", "login")
             is_valid = False
         return is_valid
